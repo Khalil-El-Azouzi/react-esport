@@ -1,24 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Navbar from "./components/layout/Navbar";
+import {Leagues} from "./components/Leagues";
+import {BrowserRouter as Router, Redirect, Route} from "react-router-dom";
+import Teams from "./components/Teams";
+import React, {useState} from "react";
 
 function App() {
+
+    const [state, setState] = useState('');
+
+    const handleGame = (value)=>{
+        setState(value);
+        console.log(value);
+    }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+            <Router>
+                    <Navbar choosedGame={handleGame} />
+                <div className="container-fluid">
+                    <Route path={'/leagues'} >
+                        <Leagues gameId={state}/>
+                    </Route>
+                    <Route path={'/teams'} >
+                        <Teams gameSlug={state}/>
+                    </Route>
+                </div>
+                <Route path="/">
+                    <Redirect to="/leagues" />
+                </Route>
+            </Router>
+      </div>
   );
 }
 
