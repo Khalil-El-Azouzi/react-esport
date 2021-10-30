@@ -41,12 +41,28 @@ export function Leagues(props){
     }
 
     function handlePage(pageNumber) {
-        console.log(pageNumber)
-        setLeagueState(leagueState => ({...leagueState, currentPage: pageNumber}));
+        if (leagueState.leagues.length !== 0){
+            setLeagueState(leagueState => ({...leagueState, currentPage: pageNumber}));
+        }
+    }
+
+    function handlePageStatus(action) {
+        switch (action){
+            case 'next':
+                setLeagueState(leagueState => ({...leagueState, currentPage: leagueState.currentPage+1}));
+                break;
+            case 'previous':
+                setLeagueState(leagueState => ({...leagueState, currentPage: leagueState.currentPage-1}));
+                break;
+            default:
+                setLeagueState(leagueState => ({...leagueState}));
+        }
     }
 
     useEffect(()=>{
-        if (props.gameId && props.gameId!=='DEFAULT') getLeagues(gameLeaguesOption)
+        if (props.gameId && props.gameId!=='DEFAULT') {
+            getLeagues(gameLeaguesOption)
+        }
         else getLeagues(allLeaguesOptions);
         // eslint-disable-next-line react-hooks/exhaustive-deps
         },[leagueState.currentPage, props.gameId])
@@ -74,20 +90,30 @@ export function Leagues(props){
             <footer className="m-3">
                 <nav aria-label="..." className="d-flex justify-content-center">
                     <ul className="pagination">
-                        <li className="page-item disabled">
-                            <button className="page-link" tabIndex="-1" aria-disabled="true">Previous</button>
+                        <li className={leagueState.currentPage===1 ? "page-item disabled" : "page-item"}>
+                            <button className="page-link" tabIndex="-1" onClick={()=>handlePageStatus("previous")}>
+                                Previous
+                            </button>
                         </li>
-                        <li className="page-item">
-                            <button className="page-link" onClick={()=>handlePage(1)}>1</button>
+                        <li className="page-item active">
+                            <button className="page-link" onClick={()=>handlePage(leagueState.currentPage)}>
+                                {leagueState.currentPage}</button>
                         </li>
-                        <li className="page-item" aria-current="page">
-                            <button className="page-link" onClick={()=>handlePage(2)} >2</button>
+
+                        <li className={leagueState.leagues.length<9 ? "page-item disabled hide" : "page-item"}>
+                            <button className="page-link" onClick={()=>handlePage(leagueState.currentPage+1)} >
+                                {leagueState.currentPage+1}
+                            </button>
                         </li>
-                        <li className="page-item">
-                            <button className="page-link" onClick={()=>handlePage(3)} >3</button>
+                        <li className={leagueState.leagues.length<9 ? "page-item hide disabled" : "page-item"}>
+                            <button className="page-link" onClick={()=>handlePage(leagueState.currentPage+2)} >
+                                {leagueState.currentPage+2}
+                            </button>
                         </li>
-                        <li className="page-item">
-                            <button className="page-link" tabIndex="+1">Next</button>
+                        <li className={leagueState.leagues.length<9 ? "page-item disabled" : "page-item"}>
+                            <button className="page-link" tabIndex="+1" onClick={()=>handlePageStatus("next")}>
+                                Next
+                            </button>
                         </li>
                     </ul>
                 </nav>
