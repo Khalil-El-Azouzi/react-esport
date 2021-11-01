@@ -1,6 +1,8 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import './css/style.css'
+import {useHistory} from "react-router-dom";
+import defaultUrlIcon from  '../defaultUrlIcone.png'
 
 export function Leagues(props){
 
@@ -11,7 +13,7 @@ export function Leagues(props){
             name: ''
         }],
         currentPage: 1,
-        pageSize: 9
+        pageSize: 12
     };
     const [leagueState, setLeagueState] = useState(initState);
 
@@ -67,26 +69,34 @@ export function Leagues(props){
         // eslint-disable-next-line react-hooks/exhaustive-deps
         },[leagueState.currentPage, props.gameId])
 
-    return (    <div className="container">
+    let history = useHistory();
+    function handleDetails(id) {
+        history.push('/leagues/'+id);
+    }
+
+    return (    <div className="League">
         <div className="align-content-center">
-                <h2>Leagues : </h2>
+            <h1 className="text-capitalize text-capitalize text-xl-center text-black-50 mt-3 mb-3"> Leagues </h1>
+            <hr/>
                 <br/>
                 <div className="row">
                     {leagueState.leagues?.map((league) => {
-                        return <div className="col-md-4" key={league.id} >
-                            <div className="card mt-2">
+                        return <div className="col-md-3" key={league.id} >
+                            <div className="card mt-3">
                                 <div className="card-header">{league.name}</div>
                                 <div className="card-body">
-                                    <img width={200} height={150} src={league.image_url} alt={league.name}/>
+                                    <img width={200} height={150} src={league.image_url || defaultUrlIcon} alt={league.name}/>
                                 </div>
                                 <div className="card-footer">
-                                    <a href={'/'}> DETAILS </a>
+                                    <button className="btn btn-block btn-outline-info" onClick={() => handleDetails(league.id)}>
+                                        Détails
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     })}
                 </div>
-
+            <br/>
             <footer className="m-3">
                 <nav aria-label="..." className="d-flex justify-content-center">
                     <ul className="pagination">
@@ -100,17 +110,17 @@ export function Leagues(props){
                                 {leagueState.currentPage}</button>
                         </li>
 
-                        <li className={leagueState.leagues.length<9 ? "page-item disabled hide" : "page-item"}>
+                        <li className={leagueState.leagues.length<12 ? "page-item disabled hide" : "page-item"}>
                             <button className="page-link" onClick={()=>handlePage(leagueState.currentPage+1)} >
                                 {leagueState.currentPage+1}
                             </button>
                         </li>
-                        <li className={leagueState.leagues.length<9 ? "page-item hide disabled" : "page-item"}>
+                        <li className={leagueState.leagues.length<12 ? "page-item hide disabled" : "page-item"}>
                             <button className="page-link" onClick={()=>handlePage(leagueState.currentPage+2)} >
                                 {leagueState.currentPage+2}
                             </button>
                         </li>
-                        <li className={leagueState.leagues.length<9 ? "page-item disabled" : "page-item"}>
+                        <li className={leagueState.leagues.length<12 ? "page-item disabled" : "page-item"}>
                             <button className="page-link" tabIndex="+1" onClick={()=>handlePageStatus("next")}>
                                 Next
                             </button>
@@ -119,7 +129,7 @@ export function Leagues(props){
                 </nav>
             </footer>
         </div>
-        </div>
+    </div>
     );
 }
 

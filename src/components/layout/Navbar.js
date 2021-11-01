@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 
@@ -43,10 +43,19 @@ function Navbar(props) {
         setGamesState({...gamesState, game_slug: event.target.value});
     }
 
+    let history = useHistory();
+    function handleNavLink(link){
+        if (link === 'teams'){
+            history.push('/teams');
+        }else if (link === 'leagues'){
+            history.push('/leagues')
+        }
+    }
+
     return(
         <div className="Navbar">
-            <nav className="navbar navbar-dark bg-primary">
-                <a href={"/"} className="navbar-brand" >E-sport</a>
+            <nav className="navbar navbar-dark bg-info">
+                <a href={"/"} className="navbar-brand" > <h2>E-sport</h2></a>
                 <div className="d-flex ml-auto">
                     <select className="custom-select mr-2" onChange={handleGameOption} defaultValue={'DEFAULT'}>
                         <option key={1} value={'DEFAULT'}> Choose a game... </option>
@@ -55,11 +64,11 @@ function Navbar(props) {
                                 {game.name}</option>
                         })}
                     </select>
-                    <button type="button" className="btn btn-light mr-2" >
-                        <Link to={"/teams"}> TEAMS </Link>
+                    <button type="button" className="btn btn-light mr-2"  onClick={() => handleNavLink('teams')}>
+                        TEAMS
                     </button>
-                    <button type="button" className="btn btn-light mr-2" >
-                        <Link to={"/leagues"}> LEAGUES </Link>
+                    <button type="button" className="btn btn-light mr-2" onClick={() => handleNavLink('leagues')}>
+                        LEAGUES
                     </button>
                 </div>
             </nav>

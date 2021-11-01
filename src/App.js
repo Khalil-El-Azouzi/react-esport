@@ -5,6 +5,7 @@ import {Leagues} from "./components/Leagues";
 import {BrowserRouter as Router, Redirect, Route} from "react-router-dom";
 import Teams from "./components/Teams";
 import React, {useState} from "react";
+import Games from "./components/Games";
 
 function App() {
 
@@ -19,16 +20,17 @@ function App() {
             <Router>
                     <Navbar choosedGame={handleGame} />
                 <div className="container-fluid">
-                    <Route path={'/leagues'} >
+                    <Route exact path={'/leagues'} >
                         <Leagues gameId={state}/>
                     </Route>
-                    <Route path={'/teams'} >
+                    <Route exactx path={'/teams'} >
                         <Teams gameSlug={state}/>
                     </Route>
+                    <Route path={['/leagues/:id','/teams/:id']} component={Games}/>
+                    <Route path="/">
+                        <Redirect to="/leagues" />
+                    </Route>
                 </div>
-                <Route path="/">
-                    <Redirect to="/leagues" />
-                </Route>
             </Router>
       </div>
   );

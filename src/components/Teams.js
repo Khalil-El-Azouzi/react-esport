@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import './Teams.css'
+import {useHistory} from "react-router-dom";
+import defaultUrlIcon from  '../defaultUrlIcone.png'
 
 function Teams(props){
     const initState = {
@@ -79,28 +81,37 @@ function Teams(props){
         }
     }
 
+    let history = useHistory();
+    function handleDetails(id) {
+        history.push('/teams/'+id);
+    }
+
     return (
-        <div className="container">
+        <div className="Team">
             <div className="align-content-center">
-                <h2>Teams : </h2>
+                <h1 className="text-capitalize text-capitalize text-black-50 mt-3 mb-3"> Teams  </h1>
+                <hr/>
+                <br/>
                 <div className="row">
                     {teamState.teams.map(team => {
                         return <div className="col-md-3" key={team.id}>
-                                    <div  className="card mt-2">
+                                    <div  className="card mt-3">
                                         <div className="card-header">
                                             {team.name}
                                         </div>
                                         <div className="card-body">
-                                            <img width={100} height={150} src={team.image_url} alt={team.acronym}/>
+                                            <img width={100} height={150} src={team.image_url || defaultUrlIcon} alt={team.acronym}/>
                                         </div>
                                         <div className="card-footer">
-                                            <a href={'/'}> DETAILS </a>
+                                            <button className="btn btn-block btn-outline-info" onClick={() => handleDetails(team.id)}>
+                                                Détails
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                     })}
                 </div>
-
+                <br/>
                 <footer className="m-3">
                     <nav aria-label="..." className="d-flex justify-content-center">
                         <ul className="pagination">
