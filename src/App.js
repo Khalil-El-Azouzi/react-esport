@@ -18,15 +18,15 @@ function App() {
   return (
       <div className="App">
             <Router>
-                    <Navbar choosedGame={handleGame} />
+                <Navbar choosedGame={handleGame} />
                 <div className="container-fluid">
                     <Route exact path={'/leagues'} >
                         <Leagues gameId={state}/>
                     </Route>
-                    <Route exactx path={'/teams'} >
+                    <Route exact path={'/teams'} >
                         <Teams gameSlug={state}/>
                     </Route>
-                    <Route path={['/leagues/:id','/teams/:id']} component={Games}/>
+                    <Route exact path={['/teams/:id','/leagues/:id']} component={Games}/>
                     <Route path="/">
                         <Redirect to="/leagues" />
                     </Route>
