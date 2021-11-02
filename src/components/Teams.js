@@ -62,15 +62,14 @@ function Teams(props){
     const getTeams = (options) => {
         axios.request(options)
             .then((response) => {
-                console.log(teamState.currentSlug);
                 setTeamState({ ...teamState, teams: response.data });
             }).catch((error) => {
             console.log(error);
         });
     }
-    let chosenGame = localStorage.getItem('game');
+    // let chosenGame = localStorage.getItem('game');
     useEffect(()=>{
-        if (chosenGame && chosenGame!=='DEFAULT'){
+        if (props.gameSlug && props.gameSlug!=='DEFAULT'){
             getTeams(gameTeamsOptions(setSlugs(props)));
         }
         else getTeams(teamOptions);
