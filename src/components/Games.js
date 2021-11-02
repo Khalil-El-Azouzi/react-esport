@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {useLocation, useHistory} from "react-router-dom";
 import axios from "axios";
 import moment from 'moment';
+import defaultUrlIcon from "../defaultUrlIcone.png";
 
 function Games(){
 
@@ -40,11 +41,12 @@ function Games(){
 
     const [gameState, setGameState] = useState(initState)
 
-    let user_token="IwMa-JpTE1gsbo_2rN4vYHJxxWl--XWGfXZijGWRsmK6LvreaMA";
-
     const gameOptions = {
         method: 'GET',
-        url: process.env.REACT_APP_API_URL+useLocation().pathname+"?token="+user_token,
+        url: process.env.REACT_APP_API_URL+useLocation().pathname+"?",
+        params : {
+            token : process.env.REACT_APP_USER_TOKEN
+        },
         headers: {Accept: 'application/json'}
     };
 
@@ -53,9 +55,9 @@ function Games(){
         axios.request(gameOptions)
             .then((response) => {
                 if (isLeaguePath){
-                    setGameState({...gameState, league: response.data, team: initState.team});    }
+                    setGameState({...gameState, league: response.data, team: initState.team});
+                }
                 else setGameState({...gameState, league: initState.league, team: response.data});
-                console.log(response.data)
             }).catch((error) => {
             console.log(error);
         });
@@ -65,7 +67,6 @@ function Games(){
     let localPath = useLocation().pathname
 
     useEffect(() => {
-        console.log(gameState);
         getGameDetails();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[localPath])
@@ -76,7 +77,7 @@ function Games(){
             <div className="card md-3 mt-3 mb-3">
                 <div className="card-header">
                     <img height={500} width={400} className="card-img-top" alt={'...'}
-                         src={gameState.league.image_url || gameState.team.image_url}/>
+                         src={gameState.league.image_url || gameState.team.image_url || defaultUrlIcon}/>
                 </div>
                 <div className="card-body">
                     <h1 className="card-title">{gameState.league.name || gameState.team.name}</h1>

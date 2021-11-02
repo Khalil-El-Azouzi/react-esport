@@ -1,23 +1,30 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import './Teams.css'
 import {useHistory} from "react-router-dom";
 import defaultUrlIcon from  '../defaultUrlIcone.png'
+import {debounceTime, distinctUntilChanged, pluck, Subject} from "rxjs";
 
 function Teams(props){
     const initState = {
         teams:[],
+        currentSlug: null,
         currentPage: 1,
-        pageSize: 12
+        pageSize: 12,
+        keyWord: ''
     }
 
     const [teamState, setTeamState] = useState(initState);
 
-    let user_token="IwMa-JpTE1gsbo_2rN4vYHJxxWl--XWGfXZijGWRsmK6LvreaMA";
-
     const teamOptions = {
         method: 'GET',
-        url: process.env.REACT_APP_TEAMS_API_URL+"&page="+teamState.currentPage+"&per_page="+teamState.pageSize,
+        url: process.env.REACT_APP_TEAMS_API_URL,
+        params: {
+            token: process.env.REACT_APP_USER_TOKEN,
+            'search[name]': teamState.keyWord,
+            page: teamState.currentPage,
+            per_page: teamState.pageSize
+        },
         headers: {Accept: 'application/json'}
     };
 
@@ -39,28 +46,36 @@ function Teams(props){
     }
 
     const gameTeamsOptions = (gameSlug) => {
-            return {
-                method: 'GET',
-                url: 'https://api.pandascore.co/' + gameSlug + '/teams?token=' + user_token +
-                    "&page=" + teamState.currentPage + "&per_page=" + teamState.pageSize,
-                headers: {Accept: 'application/json'}
-            }
+        return {
+            method: 'GET',
+            url: process.env.REACT_APP_API_URL + gameSlug + '/teams?',
+            params: {
+                token: process.env.REACT_APP_USER_TOKEN,
+                'search[name]': teamState.keyWord,
+                page: teamState.currentPage,
+                per_page: teamState.pageSize
+            },
+            headers: {Accept: 'application/json'}
+        }
     }
 
     const getTeams = (options) => {
         axios.request(options)
             .then((response) => {
+                console.log(teamState.currentSlug);
                 setTeamState({ ...teamState, teams: response.data });
             }).catch((error) => {
             console.log(error);
         });
     }
-
+    let chosenGame = localStorage.getItem('game');
     useEffect(()=>{
-        if (props.gameSlug && props.gameSlug!=='DEFAULT') getTeams(gameTeamsOptions(setSlugs(props)));
+        if (chosenGame && chosenGame!=='DEFAULT'){
+            getTeams(gameTeamsOptions(setSlugs(props)));
+        }
         else getTeams(teamOptions);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[teamState.currentPage, props.gameSlug])
+    },[teamState.currentPage, props.gameSlug, teamState.keyWord])
 
     function handlePage(pageNumber) {
         if (teamState.teams.length !== 0 ) {
@@ -86,10 +101,35 @@ function Teams(props){
         history.push('/teams/'+id);
     }
 
+    let searchTeamTerm$= new Subject();
+    function handleSearch(event) {
+        searchTeamTerm$.next(event);
+    }
+    searchTeamTerm$
+        .pipe(
+            pluck('target', 'value'),
+            debounceTime(500),
+            distinctUntilChanged()
+        ).subscribe(
+        (value) => {
+            setTeamState({...teamState, keyWord: value})
+        },
+        (error => {
+            console.log(error)})
+    )
+
     return (
         <div className="Team">
             <div className="align-content-center">
-                <h1 className="text-capitalize text-capitalize text-black-50 mt-3 mb-3"> Teams  </h1>
+                <div className={'d-flex justify-content-around'}>
+                    <h1 className="text-capitalize text-capitalize text-xl-center text-black-50 mt-3 mb-3">
+                        Teams
+                    </h1>
+                    <div className={'form-group mt-4 '}>
+                        <input type="text" className={'form-control'} placeholder={'Recherche...'}
+                               onChange={handleSearch}/>
+                    </div>
+                </div>
                 <hr/>
                 <br/>
                 <div className="row">

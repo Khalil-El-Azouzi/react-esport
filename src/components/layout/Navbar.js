@@ -18,6 +18,9 @@ function Navbar(props) {
     const gamesOptions = {
         method: 'GET',
         url: process.env.REACT_APP_GAMES_API_URL,
+        params: {
+            token: process.env.REACT_APP_USER_TOKEN
+        },
         headers: {Accept: 'application/json'}
     };
 
@@ -41,6 +44,7 @@ function Navbar(props) {
 
     function handleGameOption(event) {
         setGamesState({...gamesState, game_slug: event.target.value});
+        localStorage.setItem('game',event.target.value);
     }
 
     let history = useHistory();

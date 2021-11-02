@@ -3,6 +3,7 @@ import axios from "axios";
 import './css/style.css'
 import {useHistory} from "react-router-dom";
 import defaultUrlIcon from  '../defaultUrlIcone.png'
+import {debounceTime, distinctUntilChanged, pluck, Subject} from "rxjs";
 
 export function Leagues(props){
 
@@ -13,22 +14,32 @@ export function Leagues(props){
             name: ''
         }],
         currentPage: 1,
-        pageSize: 12
+        pageSize: 12,
+        keyWord : ''
     };
     const [leagueState, setLeagueState] = useState(initState);
 
-    let user_token="IwMa-JpTE1gsbo_2rN4vYHJxxWl--XWGfXZijGWRsmK6LvreaMA";
     const allLeaguesOptions = {
         method: 'GET',
-        url: process.env.REACT_APP_LEAGUE_API_URL+
-            "&page="+leagueState.currentPage+"&per_page="+leagueState.pageSize,
+        url: process.env.REACT_APP_LEAGUE_API_URL,
+        params: {
+            token: process.env.REACT_APP_USER_TOKEN,
+            'search[name]': leagueState.keyWord,
+            page: leagueState.currentPage,
+            per_page: leagueState.pageSize
+        },
         headers: {Accept: 'application/json'}
     };
 
     const gameLeaguesOption = {
         method: 'GET',
-        url: process.env.REACT_APP_GAME_API_URL+"/"+props.gameId+"/leagues?token="+user_token+
-            "&page="+leagueState.currentPage+"&per_page="+leagueState.pageSize,
+        url: process.env.REACT_APP_GAME_API_URL+"/"+props.gameId+"/leagues?",
+        params: {
+            token: process.env.REACT_APP_USER_TOKEN,
+            'search[name]': leagueState.keyWord,
+            page: leagueState.currentPage,
+            per_page: leagueState.pageSize
+        },
         headers: {Accept: 'application/json'}
     };
 
@@ -36,7 +47,6 @@ export function Leagues(props){
         axios.request(options)
             .then((response) => {
                 setLeagueState({...leagueState, leagues: response.data});
-                // console.log(response.data)
             }).catch((error) => {
             console.log(error);
         });
@@ -67,16 +77,42 @@ export function Leagues(props){
         }
         else getLeagues(allLeaguesOptions);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        },[leagueState.currentPage, props.gameId])
+        },[leagueState.currentPage, props.gameId, leagueState.keyWord])
 
     let history = useHistory();
     function handleDetails(id) {
         history.push('/leagues/'+id);
     }
 
+    let searchTerm$= new Subject();
+    function handleSearch(event) {
+        searchTerm$.next(event);
+    }
+    searchTerm$
+        .pipe(
+            pluck('target', 'value'),
+            debounceTime(500),
+            distinctUntilChanged()
+        ).subscribe(
+        (value) => {
+            console.log(value)
+            setLeagueState({...leagueState, keyWord: value})
+        },
+        (error => {
+            console.log(error)})
+    )
+
     return (    <div className="League">
         <div className="align-content-center">
-            <h1 className="text-capitalize text-capitalize text-xl-center text-black-50 mt-3 mb-3"> Leagues </h1>
+            <div className={'d-flex justify-content-around'}>
+                <h1 className="text-capitalize text-capitalize text-xl-center text-black-50 mt-3 mb-3">
+                    Leagues
+                </h1>
+                <div className={'form-group mt-4 '}>
+                    <input type="text" className={'form-control'} placeholder={'Recherche...'}
+                        onChange={handleSearch}/>
+                </div>
+            </div>
             <hr/>
                 <br/>
                 <div className="row">
