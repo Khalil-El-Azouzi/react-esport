@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/react-esport/static/css/main.d8301bfc.chunk.css",
+    "main.js": "/react-esport/static/js/main.7826b8ed.chunk.js",
+    "main.js.map": "/react-esport/static/js/main.7826b8ed.chunk.js.map",
+    "runtime-main.js": "/react-esport/static/js/runtime-main.e8db3d8d.js",
+    "runtime-main.js.map": "/react-esport/static/js/runtime-main.e8db3d8d.js.map",
+    "static/css/2.081f420c.chunk.css": "/react-esport/static/css/2.081f420c.chunk.css",
+    "static/js/2.23a26575.chunk.js": "/react-esport/static/js/2.23a26575.chunk.js",
+    "static/js/2.23a26575.chunk.js.map": "/react-esport/static/js/2.23a26575.chunk.js.map",
+    "static/js/3.cfcc68d8.chunk.js": "/react-esport/static/js/3.cfcc68d8.chunk.js",
+    "static/js/3.cfcc68d8.chunk.js.map": "/react-esport/static/js/3.cfcc68d8.chunk.js.map",
+    "index.html": "/react-esport/index.html",
+    "static/css/2.081f420c.chunk.css.map": "/react-esport/static/css/2.081f420c.chunk.css.map",
+    "static/css/main.d8301bfc.chunk.css.map": "/react-esport/static/css/main.d8301bfc.chunk.css.map",
+    "static/js/2.23a26575.chunk.js.LICENSE.txt": "/react-esport/static/js/2.23a26575.chunk.js.LICENSE.txt",
+    "static/media/defaultUrlIcone.4a24a1ae.png": "/react-esport/static/media/defaultUrlIcone.4a24a1ae.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e8db3d8d.js",
+    "static/css/2.081f420c.chunk.css",
+    "static/js/2.23a26575.chunk.js",
+    "static/css/main.d8301bfc.chunk.css",
+    "static/js/main.7826b8ed.chunk.js"
+  ]
+}
